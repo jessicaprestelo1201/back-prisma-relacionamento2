@@ -3,14 +3,12 @@ import CardModel from "../models/cardModel.js";
 class CardController {
   // GET /cartas
   async getAllCards(req, res) {
-    const pagina = req.query.page;
-    console.log("pagina", pagina);
+const raridade = req.query.rarity;
+console.log("Raridade:", raridade);
 
-    const limite = req.query.limit;
-    console.log("limite", limite);
-
+const ataque = req.requery.ataque
     try {
-      const cartas = await CardModel.findAll();
+      const cartas = await CardModel.findAll(raridade);
       res.json(cartas);
     } catch (error) {
       console.error("Erro ao buscar as cartas:", error);
