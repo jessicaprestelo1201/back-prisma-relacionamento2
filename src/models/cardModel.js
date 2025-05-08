@@ -2,35 +2,54 @@ import prisma from "../../prisma/prisma.js";
 
 class CardModel {
   // Obter todas as cartas
-  async findAll(raridade,ataque) {
-    // Rariade Ultra Rare
+  async findAll(raridade, ataque,pagina, limite) {
+    if (Number(pagina) < 1) {
+      pagina = 1;
+    }
+
+    if (Number(limite) < 1 || Number(limite) > 100) {
+      limite = 10;
+    }
+
+    const skip = (Number(pagina) - 1) * Number(limite);
+
     const where = {};
 
-    if(raridade){
+    if (raridade) {
       where.rarity = raridade;
-      }
+    }
 
-      if (ataque) {
-        where.attackPoints = {
-          gte: Number(ataque),
-        };
-      }
-
+    if (ataque) {
+      where.attackPoints = {
+        gte: Number(ataque),
+      };
+    }
     const cartas = await prisma.card.findMany({
-      /*Where: {
-      attackPoints: {
-        lte: 8000,
-      }, 
-where: {
-        rarity: "Ultra Rare",
-      }, */
-    
-      /*where: {
-      attackPoints: {
-       gte: Number(ataque),
-      }, 
-      rarity: raridade,
+    /*where: {
+      rarity: "Ultra Rare",
       },*/
+     
+      /*where: {
+       attackPoints: {
+        lte: 8000,
+      },*/
+      
+      /*if(raridade){
+        where: {
+          rarity: "raridade",
+        }
+      }*/
+
+       /*where: {
+       attackPoints: {
+        gte:Number(ataque), 
+       
+      },
+      rarity: "raridade",
+      },*/
+      skip,
+      take:Number(limite),
+      where,
       orderBy: {
         createdAt: "desc",
       },
@@ -44,10 +63,15 @@ where: {
         },
       },
     });
+  
+const total = cartas.length;
+const totalGeral = await prisma.card.count({
+  where,
+});
 
     // console.log(cartas);
 
-    return cartas;
+    return {cartas, total };
   }
 
   // Obter uma carta pelo ID
