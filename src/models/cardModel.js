@@ -2,7 +2,7 @@ import prisma from "../../prisma/prisma.js";
 
 class CardModel {
   // Obter todas as cartas
-  async findAll(raridade, ataque,pagina, limite) {
+  async findAll(raridade, ataque,pagina, limite,name) {
     if (Number(pagina) < 1) {
       pagina = 1;
     }
@@ -24,6 +24,14 @@ class CardModel {
         gte: Number(ataque),
       };
     }
+
+    if (name) {
+      where.name = {
+        contains: name,
+       // mode: "insensitive",
+      };
+    }
+
     const cartas = await prisma.card.findMany({
     /*where: {
       rarity: "Ultra Rare",
