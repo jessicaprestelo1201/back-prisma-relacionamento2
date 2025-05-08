@@ -3,7 +3,20 @@ import prisma from "../../prisma/prisma.js";
 class CardModel {
   // Obter todas as cartas
   async findAll() {
+    // Rariade Ultra Rare
     const cartas = await prisma.card.findMany({
+      /*Where: {
+      attackPoints: {
+        lte: 8000,
+      },
+where: {
+        rarity: "Ultra Rare",
+      }, */
+      where: {
+      attackPoints: {
+        gte: 8000,
+      },
+      },
       orderBy: {
         createdAt: "desc",
       },
